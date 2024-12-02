@@ -1,6 +1,19 @@
+const AWS = require('aws-sdk');
 exports.delete = async (event) => {
 try {
-    return handleResponse(200, "Delete user working");
+    const dynamodb = new AWS.DynamoDB.DocumentClient();
+    const { id } = event.pathParameters;
+
+    console.log("ID", id);
+
+    await dynamodb.delete({
+        TableName: 'UserTable',
+        Key: {
+            id,
+        },
+        }).promise();
+
+    return handleResponse(200, "User deleted!");
     } catch (error) {
     return handleResponse(500, {message: error.message});
     }

@@ -7,32 +7,54 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - arn:aws:dynamodb:us-west-2:794038228872:table/UserTable
 
 functions:
   createUser:
     handler: src/create.create
     events:
       - httpApi:
-          path: /createUser
+          path: /users
           method: post
           
   getAllUsers:
     handler: src/getAll.getAll
     events:
       - httpApi:
-          path: /getAllUsers
+          path: /users
           method: get
 
   updateUser:
     handler: src/update.update
     events:
       - httpApi:
-          path: /updateUser
+          path: /users/{id}
           method: put
 
   deleteUser:
     handler: src/delete.delete
     events:
       - httpApi:
-          path: /deleteUser
+          path: /users/{id}
           method: delete
+
+resources: 
+      Resources:
+        usersTable:
+          Type: AWS::DynamoDB::Table
+          Properties:
+            TableName: UserTable
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: S
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

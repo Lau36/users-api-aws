@@ -1,7 +1,25 @@
+const { v4 } = require('uuid');
+const AWS = require('aws-sdk');
+
 exports.create = async (event) => {
   try {
-    const user = JSON.parse(event.body);
-    return handleResponse(201, user);
+   
+    const dynamodb = new AWS.DynamoDB.DocumentClient();
+    const { user_name, identification } = JSON.parse(event.body);
+    const id = v4();
+
+    const newUser = {
+      id,
+      user_name,
+      identification
+    };
+
+    await dynamodb.put({
+      TableName: 'UserTable',
+      Item: newUser
+    }).promise()
+
+    return handleResponse(201, newUser);
   } catch (error) {
     return handleResponse(500, {message: error.message});
   }
