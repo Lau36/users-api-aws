@@ -1,0 +1,38 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: lau12
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: aws-api-users
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-west-2
+
+functions:
+  createUser:
+    handler: src/create.create
+    events:
+      - httpApi:
+          path: /createUser
+          method: post
+          
+  getAllUsers:
+    handler: src/getAll.getAll
+    events:
+      - httpApi:
+          path: /getAllUsers
+          method: get
+
+  updateUser:
+    handler: src/update.update
+    events:
+      - httpApi:
+          path: /updateUser
+          method: put
+
+  deleteUser:
+    handler: src/delete.delete
+    events:
+      - httpApi:
+          path: /deleteUser
+          method: delete
